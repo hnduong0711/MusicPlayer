@@ -7,82 +7,197 @@
 <link rel="stylesheet" href="./style.css">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
-<div class="player">
-    <!-- Dashboard -->
-    <div class="dashboard">
-        <!-- Header -->
-        <header>
-            <h4>Now playing:</h4>
-            <h2>String 57th & 9th</h2>
-        </header>
+<body>
+    <div class="player">
+        <!-- Dashboard -->
+        <div class="dashboard">
+            <!-- Header -->
+            <header>
+                <h4>Now playing:</h4>
+                <h2>String 57th & 9th</h2>
+            </header>
 
-        <!-- CD -->
-        <div class="cd">
-            <div class="cd-thumb" style="background-image: url('https://i.ytimg.com/vi/jTLhQf5KJSc/maxresdefault.jpg')">
+            <!-- CD -->
+            <div class="cd">
+                <div class="cd-thumb"
+                    style="background-image: url('https://i.ytimg.com/vi/jTLhQf5KJSc/maxresdefault.jpg')">
+                </div>
             </div>
+
+            <!-- Control -->
+            <div class="control">
+                <div class="btn btn-repeat">
+                    <i class="fas fa-redo"></i>
+                </div>
+                <div class="btn btn-prev">
+                    <i class="fas fa-step-backward"></i>
+                </div>
+                <div class="btn btn-toggle-play">
+                    <i class="fas fa-pause icon-pause"></i>
+                    <i class="fas fa-play icon-play"></i>
+                </div>
+                <div class="btn btn-next">
+                    <i class="fas fa-step-forward"></i>
+                </div>
+                <div class="btn btn-random">
+                    <i class="fas fa-random"></i>
+                </div>
+            </div>
+
+            <input id="progress" class="progress" type="range" value="0" step="1" min="0" max="100">
+
+            <audio id="audio" src=""></audio>
         </div>
 
-        <!-- Control -->
-        <div class="control">
-            <div class="btn btn-repeat">
-                <i class="fas fa-redo"></i>
-            </div>
-            <div class="btn btn-prev">
-                <i class="fas fa-step-backward"></i>
-            </div>
-            <div class="btn btn-toggle-play">
-                <i class="fas fa-pause icon-pause"></i>
-                <i class="fas fa-play icon-play"></i>
-            </div>
-            <div class="btn btn-next">
-                <i class="fas fa-step-forward"></i>
-            </div>
-            <div class="btn btn-random">
-                <i class="fas fa-random"></i>
-            </div>
-        </div>
+        <!-- Playlist -->
+        <div class="playlist">
 
-        <input id="progress" class="progress" type="range" value="0" step="1" min="0" max="100">
-
-        <audio id="audio" src=""></audio>
-    </div>
-
-    <!-- Playlist -->
-    <div class="playlist">
-        <div class="song">
-            <div class="thumb" style="background-image: url('https://i.ytimg.com/vi/jTLhQf5KJSc/maxresdefault.jpg')">
-            </div>
-            <div class="body">
-                <h3 class="title">Music name</h3>
-                <p class="author">Singer</p>
-            </div>
-            <div class="option">
-                <i class="fas fa-ellipsis-h"></i>
-            </div>
-        </div>
-        <div class="song">
-            <div class="thumb" style="background-image: url('https://i.ytimg.com/vi/jTLhQf5KJSc/maxresdefault.jpg')">
-            </div>
-            <div class="body">
-                <h3 class="title">Music name</h3>
-                <p class="author">Singer</p>
-            </div>
-            <div class="option">
-                <i class="fas fa-ellipsis-h"></i>
-            </div>
-        </div>
-        <div class="song">
-            <div class="thumb" style="background-image: url('https://i.ytimg.com/vi/jTLhQf5KJSc/maxresdefault.jpg')">
-            </div>
-            <div class="body">
-                <h3 class="title">Music name</h3>
-                <p class="author">Singer</p>
-            </div>
-            <div class="option">
-                <i class="fas fa-ellipsis-h"></i>
-            </div>
         </div>
     </div>
-</div>
+</body>
+
+
+<script>
+    const $ = document.querySelector.bind(document);
+    const $$ = document.querySelectorAll.bind(document);
+    const heading = $('header h2');
+    const audio = $('#audio');
+    const cd = $('.cd');
+    const playBtn = $('.btn-toggle-play')
+    console.log(playBtn)
+    const player = $('.player')
+
+
+    const app = {
+        currentIndex: 0,
+        songs: [
+            {
+                name: "At My Worst",
+                singer: "Unknown",
+                pic_path: "./img/nevada.jpg",
+                music_path: './music/at_my_worst.mp3'
+            },
+            {
+                name: "Beautiful Things",
+                singer: "Unknown",
+                pic_path: "./img/nevada.jpg",
+                music_path: './music/beautiful_things.mp3'
+            },
+            {
+                name: "Feather",
+                singer: "Unknown",
+                pic_path: "./img/nevada.jpg",
+                music_path: './music/feather.mp3'
+            },
+            {
+                name: "Flowers",
+                singer: "Unknown",
+                pic_path: "./img/nevada.jpg",
+                music_path: './music/flowers.mp3'
+            },
+            {
+                name: "Harley Quinn",
+                singer: "Unknown",
+                pic_path: "./img/nevada.jpg",
+                music_path: './music/harley_quinn.mp3'
+            },
+            {
+                name: "Nevada",
+                singer: "Unknown",
+                pic_path: "./img/nevada.jpg",
+                music_path: './music/nevada.mp3'
+            },
+            {
+                name: "Save your tears",
+                singer: "Unknown",
+                pic_path: "./img/nevada.jpg",
+                music_path: './music/save_your_tears.mp3'
+            },
+            {
+                name: "Some one you love",
+                singer: "Unknown",
+                pic_path: "./img/nevada.jpg",
+                music_path: './music/some_one_you_love.mp3'
+            },
+            {
+                name: "Unstoppable",
+                singer: "Unknown",
+                pic_path: "./img/nevada.jpg",
+                music_path: './music/unstoppable.mp3'
+            },
+            {
+                name: "Yes, And?",
+                singer: "Unknown",
+                pic_path: "./img/nevada.jpg",
+                music_path: './music/yes_and.mp3'
+            }
+        ],
+
+        render: function () {
+            const htmls = this.songs.map(song => {
+                return `
+                <div class="song">
+                <div class="thumb"
+                    style="background-image: url('${song.pic_path}')">
+                </div>
+                <div class="body">
+                    <h3 class="title">${song.name}</h3>
+                    <p class="author">${song.singer}</p>
+                </div>
+                <div class="option">
+                    <i class="fas fa-ellipsis-h"></i>
+                </div>
+            </div>
+                `
+            })
+            $('.playlist').innerHTML = htmls.join('');
+        },
+
+        handleEvents: function () {
+            const cdWidth = cd.offsetWidth;
+
+            // Xử lý phóng to thu nhỏ cd
+            document.onscroll = function () {
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const newCdWidth = cdWidth - scrollTop;
+                cd.style.width = newCdWidth > 0 ? newCdWidth + 'px' : 0;
+                cd.style.opacity = newCdWidth / cdWidth;
+            }
+
+            // Xử lý khi play
+            playBtn.addEventListener('click', function() {
+                audio.play();
+                player.classList.add('playing');
+            });
+        },
+
+        defineProperties: function () {
+            Object.defineProperty(this, 'currentSong', {
+                get: function () {
+                    return this.songs[this.currentIndex];
+                }
+            })
+        },
+
+        loadCurrentSong: function () {
+            heading.textContent = this.currentSong.name;
+            audio.src = this.currentSong.music_path;
+        },
+
+        start: function () {
+            // Định nghĩa các thuộc tính cho object này
+            this.defineProperties();
+            // Lắng nghe và xử lý các sự kiện
+            this.handleEvents();
+            // Tải thông tin bài hát đầu
+            this.loadCurrentSong();
+            // Render playlist
+            this.render();
+        }
+    }
+    // Chạy ứng dụng
+    app.start();
+
+</script>
 
 <!-- Design from: https://static.collectui.com/shots/3671744/musicloud-revolutionary-app-for-music-streaming-large -->
