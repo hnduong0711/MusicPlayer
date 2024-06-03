@@ -64,13 +64,81 @@
     const audio = $('#audio');
     const cd = $('.cd');
     const playBtn = $('.btn-toggle-play')
-    console.log(playBtn)
     const player = $('.player')
+    const progress = $('#progress')
+    const cdThumb = $('.cd-thumb')
+    const nextBtn = $('.btn-next')
+    const prevBtn = $('.btn-prev')
+    const randomBtn = $('.btn-random')
+    const repeatBtn = $('.btn-repeat')
 
 
     const app = {
         currentIndex: 0,
+        isPlaying: false,
+        isRandom: false,
+        isRepeat: false,
         songs: [
+            {
+                name: "At My Worst",
+                singer: "Unknown",
+                pic_path: "./img/nevada.jpg",
+                music_path: './music/at_my_worst.mp3'
+            },
+            {
+                name: "Beautiful Things",
+                singer: "Unknown",
+                pic_path: "./img/nevada.jpg",
+                music_path: './music/beautiful_things.mp3'
+            },
+            {
+                name: "Feather",
+                singer: "Unknown",
+                pic_path: "./img/nevada.jpg",
+                music_path: './music/feather.mp3'
+            },
+            {
+                name: "Flowers",
+                singer: "Unknown",
+                pic_path: "./img/nevada.jpg",
+                music_path: './music/flowers.mp3'
+            },
+            {
+                name: "Harley Quinn",
+                singer: "Unknown",
+                pic_path: "./img/nevada.jpg",
+                music_path: './music/harley_quinn.mp3'
+            },
+            {
+                name: "Nevada",
+                singer: "Unknown",
+                pic_path: "./img/nevada.jpg",
+                music_path: './music/nevada.mp3'
+            },
+            {
+                name: "Save your tears",
+                singer: "Unknown",
+                pic_path: "./img/nevada.jpg",
+                music_path: './music/save_your_tears.mp3'
+            },
+            {
+                name: "Some one you love",
+                singer: "Unknown",
+                pic_path: "./img/nevada.jpg",
+                music_path: './music/some_one_you_love.mp3'
+            },
+            {
+                name: "Unstoppable",
+                singer: "Unknown",
+                pic_path: "./img/nevada.jpg",
+                music_path: './music/unstoppable.mp3'
+            },
+            {
+                name: "Yes, And?",
+                singer: "Unknown",
+                pic_path: "./img/nevada.jpg",
+                music_path: './music/yes_and.mp3'
+            },
             {
                 name: "At My Worst",
                 singer: "Unknown",
@@ -134,9 +202,9 @@
         ],
 
         render: function () {
-            const htmls = this.songs.map(song => {
+            const htmls = this.songs.map((song, index) => {
                 return `
-                <div class="song">
+                <div class="song ${index === this.currentIndex ? 'active' : ''}">
                 <div class="thumb"
                     style="background-image: url('${song.pic_path}')">
                 </div>
@@ -154,7 +222,19 @@
         },
 
         handleEvents: function () {
+            // lấy thằng cha tham chiếu và properties là app
+            const _this = this;
             const cdWidth = cd.offsetWidth;
+            // Xoay đĩa cd
+            const cdThumbAnimte = cdThumb.animate([
+                { transform: 'rotate(360deg)' },
+            ],
+                {
+                    duration: 10000,
+                    interations: Infinity
+                }
+            )
+            cdThumbAnimte.pause();
 
             // Xử lý phóng to thu nhỏ cd
             document.onscroll = function () {
@@ -165,10 +245,89 @@
             }
 
             // Xử lý khi play
-            playBtn.addEventListener('click', function() {
-                audio.play();
-                player.classList.add('playing');
+            playBtn.addEventListener('click', function () {
+                if (_this.isPlaying) {
+                    audio.pause();
+                } else {
+                    audio.play();
+                }
             });
+
+            // Khi bài hát được play
+            audio.onplay = function () {
+                player.classList.add('playing');
+                _this.isPlaying = true;
+                cdThumbAnimte.play();
+            }
+            // Khi bài hát được pause
+            audio.onpause = function () {
+                player.classList.remove('playing');
+                _this.isPlaying = false;
+                cdThumbAnimte.pause();
+
+            }
+
+            // Khi tiến độ bài hát thay đổi
+            audio.ontimeupdate = function () {
+                if (audio.duration) {
+                    // currentTime: lấy thời gian hiện tại của audio
+                    // duration: thời gian toàn bài hát
+                    const progressPercent = Math.floor(audio.currentTime / audio.duration * 100);
+                    progress.value = progressPercent;
+                }
+            }
+
+            // Xử lý khi tua
+            progress.onchange = function (e) {
+                const seekTime = audio.duration * e.target.value / 100;
+                audio.currentTime = seekTime;
+            }
+
+            // Khi next bài hát
+            nextBtn.onclick = function(){
+                if(_this.isRandom){
+                    _this.randomSong();
+                }else{
+                    _this.nextSong();
+                }
+                audio.play();
+                _this.render();
+                _this.scrollToActiveSong();
+            }
+
+            // Khi prev bài hát
+            prevBtn.onclick = function() {
+                if(_this.isRandom){
+                    _this.randomSong();
+                }else{
+                    _this.prevSong();
+                }
+                audio.play();
+                _this.render();
+                _this.scrollToActiveSong();
+            }
+
+            // random bài hát
+            randomBtn.onclick = function(e){
+                _this.isRandom = !_this.isRandom
+                // Khi _this.isRandom = false sẽ không thêm active và ngược lại
+                randomBtn.classList.toggle('active', _this.isRandom)
+            }
+
+            // XỬ lý next song khi bài hát hết
+            audio.onended = function(){
+                if(_this.isRepeat){
+                    audio.play()
+                }else{
+                    nextBtn.click()
+                }
+            }
+
+            // Xử lý repeat
+            repeatBtn.onclick = function(){
+                _this.isRepeat = !_this.isRepeat
+                repeatBtn.classList.add('active', _this.isRepeat)
+            }
         },
 
         defineProperties: function () {
@@ -182,6 +341,40 @@
         loadCurrentSong: function () {
             heading.textContent = this.currentSong.name;
             audio.src = this.currentSong.music_path;
+        },
+
+        nextSong: function(){
+            this.currentIndex++
+            if(this.currentIndex >= this.songs.length){
+                this.currentIndex = 0;
+            }
+            this.loadCurrentSong();
+        },
+
+        prevSong: function(){
+            this.currentIndex--
+            if(this.currentIndex < 0){
+                this.currentIndex = this.songs.length - 1;
+            }
+            this.loadCurrentSong();
+        },
+
+        randomSong: function(){
+            let newIndex
+            do{
+                newIndex = Math.floor(Math.random() * this.songs.length);
+            } while(this.currentIndex === newIndex)
+            this.currentIndex = newIndex
+            this.loadCurrentSong()
+        },
+
+        scrollToActiveSong: function(){
+            setTimeout(() => {
+                $('.song.active').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest'
+                });
+            },300)
         },
 
         start: function () {
